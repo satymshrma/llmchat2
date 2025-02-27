@@ -27,7 +27,7 @@ const ChatWindow = ({ chatId, userId }: chatWindowProps) => {
   }, []);
 
   return (
-    <div>
+    <div className="w-auto h-auto flex flex-col">
       {/* Chat with Dropdown, custom endpoint, & Settings icon for Temp, custom system message etc. TODO: Later*/}
 
       {/* chat title */}
