@@ -1,0 +1,46 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - 11434:11434
+    networks:
+      - mainNetwork
+    volumes:
+      - ollama:/root/.ollama
+  db:
+    depends_on:
+      - ollama
+    image: mongodb/mongodb-community-server:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - db:/data/db
+    networks:
+      - mainNetwork
+  nextjs:
+    depends_on:
+      - db
+    build: .
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      MONGODB_URI: mongodb://db:27017/llmchat
+    ports:
+      - 3000:3000
+    networks:
+      - mainNetwork
+    develop:
+      watch:
+        - path: ./package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: ./src
+          target: ./app/src
+          action: sync
+
+networks:
+  mainNetwork:
+
+volumes:
+  db:
+  ollama:
